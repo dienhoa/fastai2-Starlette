@@ -8,6 +8,7 @@ from starlette.applications import Starlette
 from starlette.middleware.cors import CORSMiddleware
 from starlette.responses import HTMLResponse, JSONResponse
 from starlette.staticfiles import StaticFiles
+from io import BytesIO
 
 # fastai
 from fastai.vision.all import *
@@ -17,10 +18,10 @@ from fastai.vision.all import *
 # lib.utilities contains custom functions used during training that pickle is expecting
 
 
-export_file_url = YOUR_GDRIVE_LINK_HERE
+# export_file_url = YOUR_GDRIVE_LINK_HERE
 export_file_name = 'export.pkl'
 
-classes = YOUR_CLASSES_HERE
+classes = ['Abyssinian', 'Bengal', 'Birman', 'Bombay', 'British_Shorthair', 'Egyptian_Mau', 'Maine_Coon', 'Persian', 'Ragdoll', 'Russian_Blue', 'Siamese', 'Sphynx', 'american_bulldog', 'american_pit_bull_terrier', 'basset_hound', 'beagle', 'boxer', 'chihuahua', 'english_cocker_spaniel', 'english_setter', 'german_shorthaired', 'great_pyrenees', 'havanese', 'japanese_chin', 'keeshond', 'leonberger', 'miniature_pinscher', 'newfoundland', 'pomeranian', 'pug', 'saint_bernard', 'samoyed', 'scottish_terrier', 'shiba_inu', 'staffordshire_bull_terrier', 'wheaten_terrier', 'yorkshire_terrier']
 path = Path(__file__).parent
 
 app = Starlette()
@@ -38,7 +39,7 @@ async def download_file(url, dest):
 
 
 async def setup_learner():
-    await download_file(export_file_url, path / export_file_name)
+    # await download_file(export_file_url, path / export_file_name)
     try:
         learn = load_learner(path/export_file_name)
         return learn
@@ -68,11 +69,10 @@ async def analyze(request):
   img_data = await request.form()
   img_bytes = await (img_data['file'].read())
   img_np = np.array(Image.open(BytesIO(img_bytes)))
-  pred = learn.predict(BytesIO(img_bytes))
+  pred = learn.predict(img_np)
   return JSONResponse({
       'result': str(pred[0])
   })
-
 
 if __name__ == '__main__':
     uvicorn.run(app=app, host='0.0.0.0', port=5000, log_level="info")
