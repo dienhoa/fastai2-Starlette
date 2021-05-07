@@ -12,6 +12,7 @@ from io import BytesIO
 
 # fastai
 from fastai.vision.all import *
+import gdown
 
 # Any custom imports should be done here, for example:
 # from lib.utilities import *
@@ -20,43 +21,18 @@ from fastai.vision.all import *
 
 # export_file_url = YOUR_GDRIVE_LINK_HERE
 export_file_name = 'export.pkl'
+export_file_url = 'https://drive.google.com/uc?export=download&id=1JsVaEKIBowY4Oqh6K3AQZr8w257K6XZ_'
 
-classes = ['Abyssinian', 'Bengal', 'Birman', 'Bombay', 'British_Shorthair', 'Egyptian_Mau', 'Maine_Coon', 'Persian', 'Ragdoll', 'Russian_Blue', 'Siamese', 'Sphynx', 'american_bulldog', 'american_pit_bull_terrier', 'basset_hound', 'beagle', 'boxer', 'chihuahua', 'english_cocker_spaniel', 'english_setter', 'german_shorthaired', 'great_pyrenees', 'havanese', 'japanese_chin', 'keeshond', 'leonberger', 'miniature_pinscher', 'newfoundland', 'pomeranian', 'pug', 'saint_bernard', 'samoyed', 'scottish_terrier', 'shiba_inu', 'staffordshire_bull_terrier', 'wheaten_terrier', 'yorkshire_terrier']
 path = Path(__file__).parent
-
 app = Starlette()
 app.add_middleware(CORSMiddleware, allow_origins=['*'], allow_headers=['X-Requested-With', 'Content-Type'])
 app.mount('/static', StaticFiles(directory='app/static'))
 
+if not (path / export_file_name).exists():
+    gdown.download(export_file_url, str(path / export_file_name), quiet=False)
 
-async def download_file(url, dest):
-    if dest.exists(): return
-    async with aiohttp.ClientSession() as session:
-        async with session.get(url) as response:
-            data = await response.read()
-            with open(dest, 'wb') as f:
-                f.write(data)
-
-
-async def setup_learner():
-    # await download_file(export_file_url, path / export_file_name)
-    try:
-        learn = load_learner(path/export_file_name)
-        return learn
-    except RuntimeError as e:
-        if len(e.args) > 0 and 'CPU-only machine' in e.args[0]:
-            print(e)
-            message = "\n\nThis model was trained with an old version of fastai and will not work in a CPU environment.\n\nPlease update the fastai library in your training environment and export your model again.\n\nSee instructions for 'Returning to work' at https://course.fast.ai."
-            raise RuntimeError(message)
-        else:
-            raise
-
-
-loop = asyncio.get_event_loop()
-tasks = [asyncio.ensure_future(setup_learner())]
-learn = loop.run_until_complete(asyncio.gather(*tasks))[0]
-loop.close()
-
+learn = load_learner(path / export_file_name)
+classes = learn.dls.vocab
 
 @app.route('/')
 async def homepage(request):
