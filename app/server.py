@@ -9,19 +9,11 @@ from starlette.middleware.cors import CORSMiddleware
 from starlette.responses import HTMLResponse, JSONResponse
 from starlette.staticfiles import StaticFiles
 from io import BytesIO
-
 # fastai
-from fastai.vision.all import *
-import gdown
+from .infer import *
 
-# Any custom imports should be done here, for example:
-# from lib.utilities import *
-# lib.utilities contains custom functions used during training that pickle is expecting
-
-
-# export_file_url = YOUR_GDRIVE_LINK_HERE
-export_file_name = 'export.pkl'
-export_file_url = 'https://drive.google.com/uc?export=download&id=1JsVaEKIBowY4Oqh6K3AQZr8w257K6XZ_'
+export_file_name = 'resnet-lung.pkl'
+export_file_url = 'https://drive.google.com/uc?export=download&id=1H9ueZQzL57EwauPfJNhDCTg--MgJBpUh'
 
 path = Path(__file__).parent
 app = Starlette()
