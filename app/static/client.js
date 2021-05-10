@@ -1,21 +1,19 @@
 var el = x => document.getElementById(x);
 
-function showPicker() {
-  el("file-input").click();
-}
-
-function showPicked(input) {
-  el("upload-label").innerHTML = input.files[0].name;
+var loadImage = function(event) {
+  var path = event.target.files[0].name;
+  el('upload-label').innerHTML = path;
   var reader = new FileReader();
+  reader.readAsDataURL(event.target.files[0])
   reader.onload = function(e) {
-    el("image-picked").src = e.target.result;
-    el("image-picked").className = "";
-  };
-  reader.readAsDataURL(input.files[0]);
+    el('image-picked').src = e.target.result;
+    el('image-picked').className = ""; 
+    el('analyze-button').className = ""; 
+  }
 }
 
 function analyze() {
-  var uploadFiles = el("file-input").files;
+  var uploadFiles = el("input-image").files;
   if (uploadFiles.length !== 1) alert("Please select a file to analyze!");
 
   el("analyze-button").innerHTML = "Analyzing...";
@@ -23,11 +21,13 @@ function analyze() {
   var loc = window.location;
   xhr.open("POST", `${loc.protocol}//${loc.hostname}:${loc.port}/analyze`,
     true);
+    
   xhr.onerror = function() {
     alert(xhr.responseText);
   };
-  xhr.onload = function(e) {
-    if (this.readyState === 4) {
+
+  xhr.onreadystatechange = function(e) {
+    if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
       var response = JSON.parse(e.target.responseText);
       el("result-label").innerHTML = `Result = ${response["result"]}`;
     }

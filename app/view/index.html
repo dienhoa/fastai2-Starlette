@@ -4,38 +4,45 @@
   <link rel='stylesheet' href='../static/style.css'>
   <script src='../static/client.js'></script>
 </head>
+
 <body>
-<div>
-  <div class='center'>
-    <div class='title'>Classify Bear Images 🐻</div>
+  <div class="center">
+    <p class="title"> Pet Classifier </p>
+    <input
+      class="no-display"
+      type="file" 
+      id="input-image"
+      name="input-image"
+      accept="image/*"
+      onchange="loadImage(event)"
+      style="display: none;"
+    >
     <p>
-      Use images of <strong>teddy</strong> bears, <strong>black</strong> bears, <strong>grizzly</strong> bears, or
-      all three!
+      <label 
+        for="input-image" 
+        class="upload-label"
+        style="cursor: pointer; border-radius: 5px; border-style: solid;font-size: 15px;"
+      >
+          Upload Pet Image
+      </label>
     </p>
-    <div class='content'>
-      <div class='no-display'>
-        <input id='file-input'
-               class='no-display'
-               type='file'
-               name='file'
-               accept='image/*'
-               onchange='showPicked(this)'>
-      </div>
-      <button class='choose-file-button' type='button' onclick='showPicker()'>Select Image</button>
-      <div class='upload-label'>
-        <label id='upload-label'>No file chosen</label>
-      </div>
-      <div>
-        <img id='image-picked' class='no-display' alt='Chosen Image' height='200'>
-      </div>
-      <div class='analyze'>
-        <button id='analyze-button' class='analyze-button' type='button' onclick='analyze()'>Analyze</button>
-      </div>
-      <div class='result-label'>
-        <label id='result-label'></label>
-      </div>
-    </div>
+
+    <img class="no-display" height="200" id="image-picked" />
+
+    <p id="upload-label"> </p>
+
+    <button 
+      class="no-display" 
+      id="analyze-button" 
+      type="button"
+      onclick="analyze()"
+    > 
+      Analyze 
+    </button>
+
+    <p id="result-label">  </p>
+
+
   </div>
-</div>
 </body>
 </html>
