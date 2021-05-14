@@ -16,6 +16,7 @@ function analyze() {
   var uploadFiles = el("input-image").files;
   if (uploadFiles.length !== 1) alert("Please select a file to analyze!");
 
+  el("result-label").innerHTML = `Not finish yet`;
   el("analyze-button").innerHTML = "Analyzing...";
   var xhr = new XMLHttpRequest();
   var loc = window.location;

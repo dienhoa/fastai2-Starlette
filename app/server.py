@@ -2,6 +2,8 @@
 import aiohttp
 import asyncio
 import uvicorn
+import asyncio
+import aiofiles
 
 # starlette imports
 from starlette.applications import Starlette
@@ -48,7 +50,7 @@ au2spec = torchaudio.transforms.MelSpectrogram(sample_rate=target_rate,n_fft=n_f
 ampli2db = torchaudio.transforms.AmplitudeToDB()
 
 def get_x(path, target_rate=target_rate, num_samples=num_samples*2):
-    x, rate = torchaudio.load(path)
+    x, rate = torchaudio.load_wav(path)
     if rate != target_rate: 
         x = torchaudio.transforms.Resample(orig_freq=rate, new_freq=target_rate, resampling_method='sinc_interpolation')(x)
     x = x[0] / 32768
@@ -80,13 +82,14 @@ async def analyze(request):
     img_bytes = await (img_data['file'].read())
 
     name = f'./audio-files/{time.time()}.wav'
-    with open(name, mode='bx') as f:
-        f.write(img_bytes)
+    async with aiofiles.open(name, mode='bx') as f:
+        await f.write(img_bytes)
 
     img_np = get_x(name)
-
+    print(name)
     # img_np = np.array(Image.open(BytesIO(img_bytes)))
     pred = learn.predict(img_np)
+    print(pred)
     return JSONResponse({
         'result': str(pred[0])
     })
