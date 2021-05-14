@@ -4,6 +4,8 @@ import asyncio
 import uvicorn
 import asyncio
 import aiofiles
+from statistics import mode
+
 
 # starlette imports
 from starlette.applications import Starlette
@@ -25,6 +27,7 @@ import time
 # lib.utilities contains custom functions used during training that pickle is expecting
 
 
+random.seed(23)
 # export_file_url = YOUR_GDRIVE_LINK_HERE
 export_file_name = 'resnet-lung.pkl'
 export_file_url = 'https://drive.google.com/uc?export=download&id=1JsVaEKIBowY4Oqh6K3AQZr8w257K6XZ_'
@@ -56,7 +59,8 @@ def get_x(path, target_rate=target_rate, num_samples=num_samples*2):
     x = x[0] / 32768
     x = x.numpy()
     sample_total = x.shape[0]
-    randstart = random.randint(target_rate, sample_total-target_rate*3)
+    # randstart = random.randint(target_rate, sample_total-target_rate*3)
+    randstart = int(target_rate*1.5)
     x = x[randstart:num_samples+randstart]
     x = librosa.util.fix_length(x, num_samples)
     torch_x = torch.tensor(x)
@@ -88,6 +92,7 @@ async def analyze(request):
     img_np = get_x(name)
     print(name)
     # img_np = np.array(Image.open(BytesIO(img_bytes)))
+    # pred = mode([learn.predict(img_np)[0] for i in range(5)])
     pred = learn.predict(img_np)
     print(pred)
     return JSONResponse({
