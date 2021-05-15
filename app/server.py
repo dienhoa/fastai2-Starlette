@@ -84,7 +84,7 @@ async def analyze(request):
     img_data = await request.form()
     img_bytes = await (img_data['file'].read())
 
-    name = f'./audio-files/{time.time()}.wav'
+    name = f'./{time.time()}.wav'
     async with aiofiles.open(name, mode='bx') as f:
         await f.write(img_bytes)
 

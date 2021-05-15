@@ -1,6 +1,8 @@
 aiofiles
 aiohttp
 asyncio
+uvicorn
+python-multipart
 torch
 torchvision
 matplotlib
@@ -9,14 +11,14 @@ requests
 pyyaml
 fastprogress
 pillow
-python
+# python
 pip
 scikit-learn
 scipy
 spacy
 starlette
 fastai
-fastprogress
+SoundFile
 torchaudio
 gdown
 librosa
