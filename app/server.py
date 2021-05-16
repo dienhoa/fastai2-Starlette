@@ -90,8 +90,6 @@ async def analyze(request):
 
     img_np = get_x(name)
     print(name)
-    # img_np = np.array(Image.open(BytesIO(img_bytes)))
-    # pred = mode([learn.predict(img_np)[0] for i in range(5)])
     pred = learn.predict(img_np)
     print(pred)
     return JSONResponse({
