@@ -8,9 +8,10 @@ librosa
 uvicorn
 gdown
 pip
-torch
-torchvision
+torch==1.8.0+cpu
+torchvision==0.9.0+cpu
+torchaudio==0.8.0
+--find-links https://download.pytorch.org/whl/torch_stable.html
 fastai
-torchaudio==0.7.0
 python-multipart
 

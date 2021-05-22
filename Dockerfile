@@ -5,7 +5,7 @@ RUN apt-get update && apt-get install -y git python3-dev gcc libsndfile1\
 
 COPY requirements.txt .
 
-RUN pip install -r requirements.txt
+RUN pip install -r requirements.txt 
 
 COPY app app/
 

@@ -1,8 +1,7 @@
 # uvicorn imports
-import aiohttp
-import asyncio
+# import aiohttp
+# import asyncio
 import uvicorn
-import asyncio
 import aiofiles
 from statistics import mode
 
@@ -15,7 +14,11 @@ from starlette.staticfiles import StaticFiles
 from io import BytesIO
 
 # fastai
-from fastai.vision.all import *
+# from fastai.vision.all import *
+from fastai.learner import load_learner
+from pathlib import Path
+import random
+import torch
 import gdown
 import torchaudio
 import librosa
@@ -29,7 +32,7 @@ import time
 random.seed(23)
 # export_file_url = YOUR_GDRIVE_LINK_HERE
 export_file_name = 'resnet-lung.pkl'
-export_file_url = 'https://drive.google.com/uc?export=download&id=1JsVaEKIBowY4Oqh6K3AQZr8w257K6XZ_'
+export_file_url = 'https://drive.google.com/uc?export=download&id=17UuhqaNZ8ksx0TM75vJsa21WfWgg7J3c'
 
 path = Path(__file__).parent
 app = Starlette()
@@ -44,22 +47,21 @@ def get_y(): pass
 # configuration for audio processing
 n_fft=1024
 hop_length=256
-target_rate=44100
-num_samples=int(target_rate)
+target_rate=4000
+num_samples=int(target_rate)*8
 
 ## Helper method to tranform audio array to Spectrogram
-au2spec = torchaudio.transforms.MelSpectrogram(sample_rate=target_rate,n_fft=n_fft, hop_length=hop_length, n_mels=256)
+au2spec = torchaudio.transforms.MelSpectrogram(sample_rate=target_rate,n_fft=n_fft, hop_length=hop_length, n_mels=128, f_max=target_rate//2)
 ampli2db = torchaudio.transforms.AmplitudeToDB()
 
-def get_x(path, target_rate=target_rate, num_samples=num_samples*2):
-    x, rate = torchaudio.load_wav(path)
+def get_x(path, target_rate=target_rate, num_samples=num_samples):
+    x, rate = torchaudio.load(path)
     if rate != target_rate: 
         x = torchaudio.transforms.Resample(orig_freq=rate, new_freq=target_rate, resampling_method='sinc_interpolation')(x)
-    x = x[0] / 32768
+    x = x[0] / torch.max(torch.abs(x))
     x = x.numpy()
     sample_total = x.shape[0]
-    # randstart = random.randint(target_rate, sample_total-target_rate*3)
-    randstart = int(target_rate*1.5)
+    randstart = random.randint(0, sample_total-num_samples) if sample_total-num_samples > 0 else 0
     x = x[randstart:num_samples+randstart]
     x = librosa.util.fix_length(x, num_samples)
     torch_x = torch.tensor(x)
