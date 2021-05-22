@@ -61,7 +61,8 @@ def get_x(path, target_rate=target_rate, num_samples=num_samples):
     x = x[0] / torch.max(torch.abs(x))
     x = x.numpy()
     sample_total = x.shape[0]
-    randstart = random.randint(0, sample_total-num_samples) if sample_total-num_samples > 0 else 0
+    # randstart = random.randint(0, sample_total-num_samples) if sample_total-num_samples > 0 else 0
+    randstart = target_rate if sample_total-num_samples > 0 else 0
     x = x[randstart:num_samples+randstart]
     x = librosa.util.fix_length(x, num_samples)
     torch_x = torch.tensor(x)
