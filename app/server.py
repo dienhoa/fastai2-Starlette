@@ -12,6 +12,7 @@ from starlette.middleware.cors import CORSMiddleware
 from starlette.responses import HTMLResponse, JSONResponse
 from starlette.staticfiles import StaticFiles
 from io import BytesIO
+import os
 
 # fastai
 # from fastai.vision.all import *
@@ -33,6 +34,7 @@ random.seed(23)
 # export_file_url = YOUR_GDRIVE_LINK_HERE
 export_file_name = 'resnet-lung.pkl'
 export_file_url = 'https://drive.google.com/uc?export=download&id=17UuhqaNZ8ksx0TM75vJsa21WfWgg7J3c'
+audio_folder = 'audio-files'
 
 path = Path(__file__).parent
 app = Starlette()
@@ -41,6 +43,9 @@ app.mount('/static', StaticFiles(directory='app/static'))
 
 if not (path / export_file_name).exists():
     gdown.download(export_file_url, str(path / export_file_name), quiet=False)
+
+if not (path / audio_folder).exists():
+    os.mkdir(path / audio_folder)
 
 def get_y(): pass
 
@@ -61,7 +66,6 @@ def get_x(path, target_rate=target_rate, num_samples=num_samples):
     x = x[0] / torch.max(torch.abs(x))
     x = x.numpy()
     sample_total = x.shape[0]
-    # randstart = random.randint(0, sample_total-num_samples) if sample_total-num_samples > 0 else 0
     randstart = target_rate if sample_total-num_samples > 0 else 0
     x = x[randstart:num_samples+randstart]
     x = librosa.util.fix_length(x, num_samples)
@@ -86,12 +90,11 @@ async def homepage(request):
 async def analyze(request):
     img_data = await request.form()
     img_bytes = await (img_data['file'].read())
-
     name = f'./{time.time()}.wav'
-    async with aiofiles.open(name, mode='bx') as f:
+    audio_path = path/audio_folder/name
+    async with aiofiles.open(audio_path, mode='bx') as f:
         await f.write(img_bytes)
-
-    img_np = get_x(name)
+    img_np = get_x(audio_path)
     print(name)
     pred = learn.predict(img_np)
     print(pred)
