@@ -1,19 +1,19 @@
 var el = x => document.getElementById(x);
 
-var loadImage = function(event) {
+var loadAudio = function(event) {
   var path = event.target.files[0].name;
   el('upload-label').innerHTML = path;
   var reader = new FileReader();
   reader.readAsDataURL(event.target.files[0])
   reader.onload = function(e) {
-    el('image-picked').src = e.target.result;
-    el('image-picked').className = ""; 
+    el('audio-picked').src = e.target.result;
+    el('audio-picked').className = ""; 
     el('analyze-button').className = ""; 
   }
 }
 
 function analyze() {
-  var uploadFiles = el("input-image").files;
+  var uploadFiles = el("input-audio").files;
   if (uploadFiles.length !== 1) alert("Please select a file to analyze!");
 
   el("result-label").innerHTML = `Not finish yet`;

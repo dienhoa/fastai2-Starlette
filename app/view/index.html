@@ -11,15 +11,15 @@
     <input
       class="no-display"
       type="file" 
-      id="input-image"
-      name="input-image"
-      accept="image/*"
-      onchange="loadImage(event)"
+      id="input-audio"
+      name="input-audio"
+      accept="audio/*"
+      onchange="loadAudio(event)"
       style="display: none;"
     >
     <p>
       <label 
-        for="input-image" 
+        for="input-audio" 
         class="upload-label"
         style="cursor: pointer; border-radius: 6px; border-style: solid;font-size: 15px; padding: 7"
       >
@@ -27,7 +27,7 @@
       </label>
     </p>
 
-    <audio class="no-display" height="200" controls id="image-picked"></audio> 
+    <audio class="no-display" height="200" controls id="audio-picked"></audio> 
 
     <p id="upload-label"> </p>
 
@@ -39,9 +39,7 @@
     > 
       Analyze 
     </button>
-
     <p id="result-label">  </p>
-
 
   </div>
 </body>
