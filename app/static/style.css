@@ -2,8 +2,28 @@ body {
     background-color: #fff;
 }
 
+.instruction {
+    margin: 1em;
+    font-size: 20px
+}
+
+.note {
+    font-size: 15px;
+    font-style: italic;
+    margin: 0.5em;
+}
+
 .no-display {
     display: none;
+}
+
+.upload-label {
+    padding: 10px;
+    margin: 50px;
+    font-size: 15px;
+    border-radius: 6px;
+    border-style: solid;
+    cursor: pointer;
 }
 
 .center {

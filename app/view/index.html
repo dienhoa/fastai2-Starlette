@@ -7,7 +7,21 @@
 
 <body>
   <div class="center">
-    <p class="title"> Lung Sound Classifier </p>
+    <h3 class="title"> Lung Sound Classifier </h3>
+
+    <p class="instruction">
+      Upload your audio file from digital stretroscope
+    </p>
+
+
+    <p class="note">
+      Full DataSet can be found at <a href="https://www.kaggle.com/vbookshelf/respiratory-sound-database" > Kaggle </a>
+    </p>
+    <p class="note">
+      or 2 samples here: <a href="https://drive.google.com/uc?export=download&id=1kfVS6a8U37mcRAPZh7D-WGdelvUJ9Pb7">Healthy</a>
+      &emsp; <a href="https://drive.google.com/uc?export=download&id=1KpKED_KhJ4yyT4WHAqiEhOSSFN0lLD8K"> Unhealthy</a>
+    </p>
+
     <input
       class="no-display"
       type="file" 
@@ -17,11 +31,10 @@
       onchange="loadAudio(event)"
       style="display: none;"
     >
-    <p>
+    <p style="margin: 2em;">
       <label 
         for="input-audio" 
         class="upload-label"
-        style="cursor: pointer; border-radius: 6px; border-style: solid;font-size: 15px; padding: 7"
       >
           Upload Audio 
       </label>
